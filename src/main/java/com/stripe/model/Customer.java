@@ -8,9 +8,15 @@ import com.stripe.exception.InvalidRequestException;
 import com.stripe.net.APIResource;
 import com.stripe.net.RequestOptions;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter @Setter @EqualsAndHashCode(callSuper=false)
 public class Customer extends APIResource implements MetadataStore<Customer>, HasId {
 	String id;
 	String object;
@@ -18,7 +24,7 @@ public class Customer extends APIResource implements MetadataStore<Customer>, Ha
 	String businessVatId;
 	Long created;
 	String currency;
-	ExpandableField<ExternalAccount> defaultSource;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<ExternalAccount> defaultSource;
 	Boolean deleted;
 	Boolean delinquent;
 	String description;
@@ -30,64 +36,36 @@ public class Customer extends APIResource implements MetadataStore<Customer>, Ha
 	ExternalAccountCollection sources;
 	CustomerSubscriptionCollection subscriptions;
 
+	/**
+	 * @deprecated Use `sources` field (https://stripe.com/docs/upgrades#2015-02-18)
+	 */
 	@Deprecated
 	CustomerCardCollection cards;
+
+	/**
+	 * @deprecated Use `default_source` field (https://stripe.com/docs/upgrades#2015-02-18)
+	 */
 	@Deprecated
 	String defaultCard;
+
+	/**
+	 * @deprecated Use the upcoming invoice endpoint (https://stripe.com/docs/upgrades#2012-03-25)
+	 */
 	@Deprecated
 	NextRecurringCharge nextRecurringCharge;
+
+	/**
+	 * @deprecated
+	 * Use `subscriptions` field (https://stripe.com/docs/upgrades#2014-01-31)
+	 */
 	@Deprecated
 	Subscription subscription;
+
+	/**
+	 * @deprecated Use `subscriptions` field (https://stripe.com/docs/upgrades#2014-01-31)
+	 */
 	@Deprecated
 	Long trialEnd;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getObject() {
-		return object;
-	}
-
-	public void setObject(String object) {
-		this.object = object;
-	}
-
-	public Long getAccountBalance() {
-		return accountBalance;
-	}
-
-	public void setAccountBalance(Long accountBalance) {
-		this.accountBalance = accountBalance;
-	}
-
-	public String getBusinessVatId() {
-		return businessVatId;
-	}
-
-	public void setBusinessVatId(String businessVatId) {
-		this.businessVatId = businessVatId;
-	}
-
-	public Long getCreated() {
-		return created;
-	}
-
-	public void setCreated(Long created) {
-		this.created = created;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
 
 	public String getDefaultSource() {
 		if (this.defaultSource == null) {
@@ -109,154 +87,6 @@ public class Customer extends APIResource implements MetadataStore<Customer>, Ha
 
 	public void setDefaultSourceObject(ExternalAccount c) {
 		this.defaultSource = new ExpandableField<ExternalAccount>(c.getId(), c);
-	}
-
-	public Boolean getDeleted() {
-		return deleted;
-	}
-
-	public Boolean getDelinquent() {
-		return delinquent;
-	}
-
-	public void setDelinquent(Boolean delinquent) {
-		this.delinquent = delinquent;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Discount getDiscount() {
-		return discount;
-	}
-
-	public void setDiscount(Discount discount) {
-		this.discount = discount;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Boolean getLivemode() {
-		return livemode;
-	}
-
-	public void setLivemode(Boolean livemode) {
-		this.livemode = livemode;
-	}
-
-	public Map<String, String> getMetadata() {
-		return metadata;
-	}
-
-	public void setMetadata(Map<String, String> metadata) {
-		this.metadata = metadata;
-	}
-
-	public ShippingDetails getShipping() {
-		return shipping;
-	}
-
-	public void setShipping(ShippingDetails shipping) {
-		this.shipping = shipping;
-	}
-
-	public ExternalAccountCollection getSources() {
-		return sources;
-	}
-
-	public void setSources(ExternalAccountCollection sources) {
-		this.sources = sources;
-	}
-
-	public CustomerSubscriptionCollection getSubscriptions() {
-		return subscriptions;
-	}
-
-	public void setSubscriptions(CustomerSubscriptionCollection subscriptions) {
-		this.subscriptions = subscriptions;
-	}
-
-	/**
-	 * @deprecated Use `sources` field (https://stripe.com/docs/upgrades#2015-02-18)
-	 */
-	@Deprecated
-	public CustomerCardCollection getCards() {
-		return cards;
-	}
-
-	/**
-	 * @deprecated Use `default_source` field (https://stripe.com/docs/upgrades#2015-02-18)
-	 */
-	@Deprecated
-	public String getDefaultCard() {
-		return defaultCard;
-	}
-
-	/**
-	 * @deprecated Use `default_source` field (https://stripe.com/docs/upgrades#2015-02-18)
-	 */
-	@Deprecated
-	public void setDefaultCard(String defaultCard) {
-		this.defaultCard = defaultCard;
-	}
-
-	/**
-	 * @deprecated Use the upcoming invoice endpoint (https://stripe.com/docs/upgrades#2012-03-25)
-	 */
-	@Deprecated
-	public NextRecurringCharge getNextRecurringCharge() {
-		return nextRecurringCharge;
-	}
-
-	/**
-	 * @deprecated Use the upcoming invoice endpoint (https://stripe.com/docs/upgrades#2012-03-25)
-	 */
-	@Deprecated
-	public void setNextRecurringCharge(NextRecurringCharge nextRecurringCharge) {
-		this.nextRecurringCharge = nextRecurringCharge;
-	}
-
-	/**
-	 * @deprecated Use `subscriptions` field (https://stripe.com/docs/upgrades#2014-01-31)
-	 */
-	@Deprecated
-	public Subscription getSubscription() {
-		return subscription;
-	}
-
-	/**
-	 * @deprecated Use `subscriptions` field (https://stripe.com/docs/upgrades#2014-01-31)
-	 */
-	@Deprecated
-	public void setSubscription(Subscription subscription) {
-		this.subscription = subscription;
-	}
-
-	/**
-	 * @deprecated Use `subscriptions` field (https://stripe.com/docs/upgrades#2014-01-31)
-	 */
-	@Deprecated
-	public Long getTrialEnd() {
-		return trialEnd;
-	}
-
-	/**
-	 * @deprecated Use `subscriptions` field (https://stripe.com/docs/upgrades#2014-01-31)
-	 */
-	@Deprecated
-	public void setTrialEnd(Long trialEnd) {
-		this.trialEnd = trialEnd;
 	}
 
 	public static Customer create(Map<String, Object> params)

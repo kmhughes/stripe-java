@@ -8,8 +8,14 @@ import com.stripe.exception.InvalidRequestException;
 import com.stripe.net.APIResource;
 import com.stripe.net.RequestOptions;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
+@Getter @Setter @EqualsAndHashCode(callSuper=false)
 public class Plan extends APIResource implements MetadataStore<Plan>, HasId {
 	String id;
 	String object;
@@ -21,152 +27,53 @@ public class Plan extends APIResource implements MetadataStore<Plan>, HasId {
 	Boolean livemode;
 	Map<String, String> metadata;
 	String nickname;
-	String product;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<Product> product;
 
-	@Deprecated
-	String statementDescription;
+	/**
+	 *  @deprecated Prefer using the product field (https://stripe.com/docs/upgrades#2018-02-05)
+	 */
 	@Deprecated
 	String name;
+
+	/**
+	 *  @deprecated Prefer using the product field (https://stripe.com/docs/upgrades#2018-02-05)
+	 */
 	@Deprecated
 	Integer trialPeriodDays;
+
+	/**
+	 *  @deprecated Prefer using the product field (https://stripe.com/docs/upgrades#2018-02-05)
+	 */
+	@Deprecated
+	String statementDescription;
+
+	/**
+	 *  @deprecated Prefer using the product field (https://stripe.com/docs/upgrades#2018-02-05)
+	 */
 	@Deprecated
 	String statementDescriptor;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getObject() {
-		return object;
-	}
-
-	public void setObject(String object) {
-		this.object = object;
-	}
-
-	public Long getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Long amount) {
-		this.amount = amount;
-	}
-
-	public Long getCreated() {
-		return created;
-	}
-
-	public void setCreated(Long created) {
-		this.created = created;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	public String getInterval() {
-		return interval;
-	}
-
-	public void setInterval(String interval) {
-		this.interval = interval;
-	}
-
-	public Integer getIntervalCount() {
-		return intervalCount;
-	}
-
-	public void setIntervalCount(Integer intervalCount) {
-		this.intervalCount = intervalCount;
-	}
-
-	public Boolean getLivemode() {
-		return livemode;
-	}
-
-	public void setLivemode(Boolean livemode) {
-		this.livemode = livemode;
-	}
-
-	public Map<String, String> getMetadata() {
-		return metadata;
-	}
-
-	public void setMetadata(Map<String, String> metadata) {
-		this.metadata = metadata;
-	}
-
-	public String getNickname() {
-		return nickname;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
 	public String getProduct() {
-		return product;
+		if (this.product == null) {
+			return null;
+		}
+		return this.product.getId();
 	}
 
-	public void setProduct(String product) {
-		this.product = product;
+	public void setProduct(String productID) {
+		this.product = setExpandableFieldID(productID, this.product);
+
 	}
 
-	/**
-	 *  @deprecated Prefer using the product field (https://stripe.com/docs/upgrades#2018-02-05)
-	 */
-	public String getName() {
-		return name;
+	public Product getProductObject() {
+		if (this.product == null) {
+			return null;
+		}
+		return this.product.getExpanded();
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 *  @deprecated Prefer using the product field (https://stripe.com/docs/upgrades#2018-02-05)
-	 */
-	public String getStatementDescriptor() {
-		return statementDescriptor;
-	}
-
-	public void setStatementDescriptor(String statementDescriptor) {
-		this.statementDescriptor = statementDescriptor;
-	}
-
-	/**
-	 *  @deprecated Prefer using the product field (https://stripe.com/docs/upgrades#2018-02-05)
-	 */
-	public Integer getTrialPeriodDays() {
-		return trialPeriodDays;
-	}
-
-	public void setTrialPeriodDays(Integer trialPeriodDays) {
-		this.trialPeriodDays = trialPeriodDays;
-	}
-
-	/**
-	 * @deprecated Use `statement_descriptor` field (https://stripe.com/docs/upgrades#2014-12-17)
-	 */
-	@Deprecated
-	public String getStatementDescription() {
-		return statementDescription;
-	}
-
-	/**
-	 * @deprecated Use `statement_descriptor` field (https://stripe.com/docs/upgrades#2014-12-17)
-	 */
-	@Deprecated
-	public void setStatementDescription(String statementDescription) {
-		this.statementDescription = statementDescription;
+	public void setProductObject(Product product) {
+		this.product = new ExpandableField<Product>(product.getId(), product);
 	}
 
 	public static Plan create(Map<String, Object> params)

@@ -8,15 +8,21 @@ import com.stripe.exception.InvalidRequestException;
 import com.stripe.net.APIResource;
 import com.stripe.net.RequestOptions;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.Map;
 
+@Getter @Setter @EqualsAndHashCode(callSuper=false)
 public class Dispute extends APIResource implements HasId {
 	String id;
 	String object;
 	Long amount;
 	List<BalanceTransaction> balanceTransactions;
-	ExpandableField<Charge> charge;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<Charge> charge;
 	Long created;
 	String currency;
 	EvidenceSubObject evidenceSubObject; // `evidence`
@@ -29,58 +35,28 @@ public class Dispute extends APIResource implements HasId {
 	String networkReasonCode; // Not part of the public API.
 
 	/**
-	 * 8/2014: Legacy (now use balanceTransactions) -- https://stripe.com/docs/upgrades#2014-08-20
+	 * @deprecated Use `balance_transactions` field
 	 */
 	@Deprecated
 	String balanceTransaction;
+
 	/**
-	 * 12/2014: Legacy (now use evidenceSubObject) -- https://stripe.com/docs/upgrades
+	 * @deprecated Use evidenceSubObject (https://stripe.com/docs/upgrades#2014-12-08)
 	 */
 	@Deprecated
 	String evidence;
+
 	/**
-	 * 12/2014: Legacy (now use evidenceDetails.dueBy) -- https://stripe.com/docs/upgrades
+	 * @deprecated Use evidenceDetails.dueBy (https://stripe.com/docs/upgrades#2014-12-08)
 	 */
 	@Deprecated
 	Long evidenceDueBy;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getObject() {
-		return object;
-	}
-
-	public void setObject(String object) {
-		this.object = object;
-	}
-
-	public Long getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Long amount) {
-		this.amount = amount;
-	}
-
-	public List<BalanceTransaction> getBalanceTransactions() {
-		return balanceTransactions;
-	}
-
-	public void setBalanceTransactions(List<BalanceTransaction> balanceTransactions) {
-		this.balanceTransactions = balanceTransactions;
-	}
-
 	public String getCharge() {
-		if (charge == null) {
+		if (this.charge == null) {
 			return null;
 		}
-		return charge.getId();
+		return this.charge.getId();
 	}
 
 	public void setCharge(String chargeID) {
@@ -94,139 +70,8 @@ public class Dispute extends APIResource implements HasId {
 		return this.charge.getExpanded();
 	}
 
-	public void setChargeObject(Charge charge) {
-		this.charge = new ExpandableField<Charge>(charge.getId(), charge);
-	}
-
-	public Long getCreated() {
-		return created;
-	}
-
-	public void setCreated(Long created) {
-		this.created = created;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	public EvidenceSubObject getEvidenceSubObject() {
-		return evidenceSubObject;
-	}
-
-	public void setEvidenceSubObject(EvidenceSubObject evidence) {
-		this.evidenceSubObject = evidence;
-	}
-
-	public EvidenceDetails getEvidenceDetails() {
-		return evidenceDetails;
-	}
-
-	public void setEvidenceDetails(EvidenceDetails evidenceDetails) {
-		this.evidenceDetails = evidenceDetails;
-	}
-
-	public boolean getIsChargeRefundable() {
-		return isChargeRefundable;
-	}
-
-	public void setIsChargeRefundable(Boolean isChargeRefundable) {
-		this.isChargeRefundable = isChargeRefundable;
-	}
-
-	public Boolean getLivemode() {
-		return livemode;
-	}
-
-	public void setLivemode(Boolean livemode) {
-		this.livemode = livemode;
-	}
-
-	public Map<String, String> getMetadata() {
-		return metadata;
-	}
-
-	public void setMetadata(Map<String, String> metadata) {
-		this.metadata = metadata;
-	}
-
-	public String getReason() {
-		return reason;
-	}
-
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getNetworkReasonCode() {
-		return networkReasonCode;
-	}
-
-	/**
-	 * This method is not part of the public API and for internal use only.
-	 */
-	public void setNetworkReasonCode(String networkReasonCode) {
-		this.networkReasonCode = networkReasonCode;
-	}
-
-	/**
-	 * @deprecated Use `balance_transactions` field
-	 */
-	@Deprecated
-	public String getBalanceTransaction() {
-		return balanceTransaction;
-	}
-
-	/**
-	 * @deprecated Use `balance_transactions` field
-	 */
-	@Deprecated
-	public void setBalanceTransaction(String balanceTransaction) {
-		this.balanceTransaction = balanceTransaction;
-	}
-
-	/**
-	 * @deprecated Use evidenceSubObject (https://stripe.com/docs/upgrades#2014-12-08)
-	 */
-	@Deprecated
-	public String getEvidence() {
-		return evidence;
-	}
-
-	/**
-	 * @deprecated Use evidenceSubObject (https://stripe.com/docs/upgrades#2014-12-08)
-	 */
-	@Deprecated
-	public void setEvidence(String evidence) {
-		this.evidence = evidence;
-	}
-
-	/**
-	 * @deprecated Use evidenceDetails.dueBy (https://stripe.com/docs/upgrades#2014-12-08)
-	 */
-	@Deprecated
-	public Long getEvidenceDueBy() {
-		return evidenceDueBy;
-	}
-
-	/**
-	 * @deprecated Use evidenceDetails.dueBy (https://stripe.com/docs/upgrades#2014-12-08)
-	 */
-	@Deprecated
-	public void setEvidenceDueBy(Long evidenceDueBy) {
-		this.evidenceDueBy = evidenceDueBy;
+	public void setChargeObject(Charge c) {
+		this.charge = new ExpandableField<Charge>(c.getId(), c);
 	}
 
 	public static Dispute retrieve(String id) throws AuthenticationException,

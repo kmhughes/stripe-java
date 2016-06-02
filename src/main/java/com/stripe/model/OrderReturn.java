@@ -11,6 +11,12 @@ import com.stripe.exception.InvalidRequestException;
 import com.stripe.net.APIResource;
 import com.stripe.net.RequestOptions;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter @EqualsAndHashCode(callSuper=false)
 public class OrderReturn extends APIResource implements HasId {
 	String id;
 	String object;
@@ -19,64 +25,8 @@ public class OrderReturn extends APIResource implements HasId {
 	String currency;
 	List<OrderItem> items;
 	Boolean livemode;
-	ExpandableField<Order> order;
-	ExpandableField<Refund> refund;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getObject() {
-		return object;
-	}
-
-	public void setObject(String object) {
-		this.object = object;
-	}
-
-	public Long getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Long amount) {
-		this.amount = amount;
-	}
-
-	public Long getCreated() {
-		return created;
-	}
-
-	public void setCreated(Long created) {
-		this.created = created;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	public List<OrderItem> getItems() {
-		return items;
-	}
-
-	public void setItems(List<OrderItem> items) {
-		this.items = items;
-	}
-
-	public Boolean getLivemode() {
-		return livemode;
-	}
-
-	public void setLivemode(Boolean livemode) {
-		this.livemode = livemode;
-	}
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<Order> order;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<Refund> refund;
 
 	public String getOrder() {
 		if (order == null) {

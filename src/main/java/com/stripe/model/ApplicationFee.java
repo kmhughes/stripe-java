@@ -8,42 +8,36 @@ import com.stripe.exception.InvalidRequestException;
 import com.stripe.net.APIResource;
 import com.stripe.net.RequestOptions;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
+@Getter @Setter @EqualsAndHashCode(callSuper=false)
 public class ApplicationFee extends APIResource implements HasId {
 	String id;
 	String object;
-	ExpandableField<Account> account;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<Account> account;
 	Long amount;
 	Long amountRefunded;
-	ExpandableField<Application> application;
-	ExpandableField<BalanceTransaction> balanceTransaction;
-	ExpandableField<Charge> charge;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<Application> application;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<BalanceTransaction> balanceTransaction;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<Charge> charge;
 	Long created;
 	String currency;
 	Boolean livemode;
-	ExpandableField<Charge> originatingTransaction;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE) ExpandableField<Charge> originatingTransaction;
 	Boolean refunded;
-	FeeRefundCollection refunds;
+	@Getter(AccessLevel.NONE) FeeRefundCollection refunds;
 
+	/**
+	 * @deprecated
+	 * Use `account` field (https://stripe.com/docs/upgrades#2013-12-03)
+	 */
 	@Deprecated
 	String user;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getObject() {
-		return object;
-	}
-
-	public void setObject(String object) {
-		this.object = object;
-	}
 
 	public String getAccount() {
 		if (this.account == null) {
@@ -65,22 +59,6 @@ public class ApplicationFee extends APIResource implements HasId {
 
 	public void setAccountObject(Account c) {
 		this.account = new ExpandableField<Account>(c.getId(), c);
-	}
-
-	public Long getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Long amount) {
-		this.amount = amount;
-	}
-
-	public Long getAmountRefunded() {
-		return amountRefunded;
-	}
-
-	public void setAmountRefunded(Long amountRefunded) {
-		this.amountRefunded = amountRefunded;
 	}
 
 	public String getApplication() {
@@ -149,30 +127,6 @@ public class ApplicationFee extends APIResource implements HasId {
 		this.charge = new ExpandableField<Charge>(c.getId(), c);
 	}
 
-	public Long getCreated() {
-		return created;
-	}
-
-	public void setCreated(Long created) {
-		this.created = created;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	public Boolean getLivemode() {
-		return livemode;
-	}
-
-	public void setLivemode(Boolean livemode) {
-		this.livemode = livemode;
-	}
-
 	public String getOriginatingTransaction() {
 		if (this.originatingTransaction == null) {
 			return null;
@@ -195,14 +149,6 @@ public class ApplicationFee extends APIResource implements HasId {
 		this.originatingTransaction = new ExpandableField<Charge>(c.getId(), c);
 	}
 
-	public Boolean getRefunded() {
-		return refunded;
-	}
-
-	public void setRefunded(Boolean refunded) {
-		this.refunded = refunded;
-	}
-
 	public FeeRefundCollection getRefunds() {
 		// API versions 2014-07-26 and earlier render charge refunds as an array
 		// instead of an object, meaning there is no sublist URL.
@@ -211,22 +157,6 @@ public class ApplicationFee extends APIResource implements HasId {
 		}
 
 		return refunds;
-	}
-
-	/**
-	 * @deprecated Use `account` field (https://stripe.com/docs/upgrades#2013-12-03)
-	 */
-	@Deprecated
-	public String getUser() {
-		return user;
-	}
-
-	/**
-	 * @deprecated Use `account` field (https://stripe.com/docs/upgrades#2013-12-03)
-	 */
-	@Deprecated
-	public void setUser(String user) {
-		this.user = user;
 	}
 
 	public static ApplicationFee retrieve(String id) throws AuthenticationException,
