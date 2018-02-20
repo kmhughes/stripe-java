@@ -230,4 +230,11 @@ public class BaseStripeMockTest {
 
 		return ret;
 	}
+
+	public static String getYear() {
+		Date date = new Date(); //Get current date
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		return calendar.get(Calendar.YEAR) + 1 + "";
+	}
 }

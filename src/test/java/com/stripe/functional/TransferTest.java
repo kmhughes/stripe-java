@@ -1,6 +1,6 @@
 package com.stripe.functional;
 
-import com.stripe.BaseStripeFunctionalTest;
+import com.stripe.BaseStripeMockTest;
 import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
@@ -15,63 +15,43 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class TransferTest extends BaseStripeFunctionalTest {
-	static Map<String, Object> getDefaultAccountParams() {
-		Map<String, Object> defaultAccountParams = new HashMap<String, Object>();
-		// TODO: make defaultAccountParams the default for a given currency?
-		HashMap<String, Object> externalAccount = new HashMap<String, Object>();
-		externalAccount.putAll(defaultBankAccountParams);
-		externalAccount.put("object", "bank_account");
-
-		defaultAccountParams.put("external_account", externalAccount);
-		defaultAccountParams.put("email", getUniqueEmail());
-		return defaultAccountParams;
-	}
-
-	static Map<String, Object> getTransferParams() throws StripeException {
-		Map<String, Object> params = new HashMap<String, Object>();
-		Account destination = Account.create(getDefaultAccountParams());
-		params.put("amount", 100);
-		params.put("currency", "usd");
-		params.put("destination", destination.getId());
-		return params;
-	}
-
+public class TransferTest extends BaseStripeMockTest {
 	@Test
 	public void testTransferCreate() throws StripeException {
-		Map<String, Object> transferParams = getTransferParams();
-		Transfer createdTransfer = Transfer.create(transferParams);
-		assertEquals(transferParams.get("destination"), createdTransfer.getDestination());
-	}
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("amount", 100);
+		params.put("currency", "usd");
+		params.put("destination", "acct_123");
 
-	@Test
-	public void testTransferCancel() throws StripeException {
-		Transfer created = Transfer.create(getTransferParams());
-		try {
-			// we expect an InvalidRequestException here (caught by JUnit),
-			// because in test mode, transfers are automatically sent.
-			created.cancel(RequestOptions.getDefault());
-			Assert.fail();
-		} catch (InvalidRequestException ire) {
-			// do nothing
-		}
-
+		Transfer transfer = Transfer.create(params);
+		assertNotNull(transfer);
 	}
 
 	@Test
 	public void testTransferRetrieve() throws StripeException {
-		Transfer createdTransfer = Transfer.create(getTransferParams());
-		Transfer retrievedTransfer = Transfer.retrieve(createdTransfer.getId());
-		assertEquals(createdTransfer.getDate(), retrievedTransfer.getDate());
-		assertEquals(createdTransfer.getId(), retrievedTransfer.getId());
+		Transfer transfer = Transfer.retrieve("tr_123");
+		assertNotNull(transfer);
 	}
 
 	@Test
-	public void testTransferDestinationLoadedCorrectly() throws StripeException {
-		Map<String, Object> transferParams = getTransferParams();
-		Transfer created = Transfer.create(transferParams);
-		assertEquals(transferParams.get("destination"), created.getDestination());
+	public void testTransferCancel() throws StripeException {
+		Transfer transfer = Transfer.retrieve("tr_123");
+		// TODO: test `cancel` URL to ensure it works as stripe-mock can't support this
+		// transfer.cancel(RequestOptions.getDefault());
+	}
+
+	@Test
+	public void testTransferUpdate() throws StripeException {
+		Map<String, String> metadata = new HashMap<String, String>();
+		metadata.put("key", "value");
+		Map<String, Object> updateParams = new HashMap<String, Object>();
+		updateParams.put("metadata", metadata);
+
+		Transfer transfer = Transfer.retrieve("tr_123");
+		Transfer updated = transfer.update(updateParams);
+		assertNotNull(updated);
 	}
 
 	@Test
@@ -84,17 +64,10 @@ public class TransferTest extends BaseStripeFunctionalTest {
 
 	@Test
 	public void testTransferTransactions() throws StripeException {
-		Map<String, Object> transferParams = getTransferParams();
-		Transfer transfer = Transfer.create(transferParams);
-		HashMap<String, Object> params = new HashMap<String, Object>();
-		TransferTransactionCollection transactions = transfer.transactions(params, supportedRequestOptions);
-		// Test that requestOptions and requestParams are the same in returned transactions:
-		assertEquals(supportedRequestOptions, transactions.getRequestOptions());
-		assertEquals(params, transactions.getRequestParams());
-	}
-
-	@Test
-	public void testTransferMetadata() throws StripeException {
-		testMetadata(Transfer.create(getTransferParams()));
+		Transfer transfer = Transfer.retrieve("tr_123");
+		// TODO: test `transactions` URL to ensure it works as stripe-mock can't support this
+		// We also should deprecate this old method.
+		//TransferTransactionCollection transactions = transfer.transactions(null, (RequestOptions) null);
+		//assertNotNull(transactions);
 	}
 }
