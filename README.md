@@ -113,6 +113,13 @@ API.
 
 ## Testing
 
+The test suite depends on [stripe-mock], so make sure to fetch and run it from a
+background terminal ([stripe-mock's README][stripe-mock] also contains
+instructions for installing via Homebrew and other methods):
+
+    go get -u github.com/stripe/stripe-mock
+    stripe-mock
+
 You must have Gradle installed. To run the tests:
 
     ./gradlew test
@@ -122,6 +129,8 @@ You can run particular tests by passing `--tests Class#method`. Make sure you us
     ./gradlew test --tests com.stripe.model.AccountTest
     ./gradlew test --tests com.stripe.functional.ChargeTest
     ./gradlew test --tests com.stripe.functional.ChargeTest.testChargeCreate
+
+[stripe-mock]: https://github.com/stripe/stripe-mock
 
 <!--
 # vim: set tw=79:
