@@ -3,11 +3,10 @@ package com.stripe.functional;
 import com.stripe.BaseStripeFunctionalTest;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
-import com.stripe.model.DeletedPlan;
-import com.stripe.model.Plan;
+import com.stripe.model.*;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,83 @@ public class PlanTest extends BaseStripeFunctionalTest {
 		assertEquals(plan.getIntervalCount(), (Integer) 2);
 		assertEquals(plan.getNickname(), defaultPlanWithProductParams.get("nickname"));
 		assertNotNull(plan.getProduct());
+	}
+
+	@Test
+	public void testPlanCreateWithTiers() throws StripeException {
+		Map<String, Object> productParams = new HashMap<String, Object>();
+		productParams.put("name", "Bar");
+
+		Map<String, Object> params = getUniquePlanParams();
+		params.remove("amount");
+		params.remove("name");
+		params.put("nickname", "Foo");
+		params.put("product", productParams);
+
+		Map<String, Object> tier1 = new HashMap<>();
+		tier1.put("up_to", 1000);
+		tier1.put("amount", 1000);
+
+		Map<String, Object> tier2 = new HashMap<>();
+		tier2.put("up_to", "inf");
+		tier2.put("amount", 2000);
+
+		List<Map<String, Object>> tiers = new ArrayList<>();
+		tiers.add(tier1);
+		tiers.add(tier2);
+		params.put("tiers", tiers);
+		params.put("tiers_mode", "volume");
+		params.put("billing_scheme", "tiered");
+
+		Plan plan = Plan.create(params);
+		assertEquals(null, plan.getAmount());
+		assertEquals("volume", plan.getTiers());
+		List<PlanTier> tierConfig = plan.getTiers();
+		assertEquals(2, tierConfig.size());
+		assertEquals(new Long(1000), tierConfig.get(0).getAmount());
+		assertEquals(new Long(1000), tierConfig.get(0).getUpTo());
+		assertEquals(null, tierConfig.get(1).getUpTo());
+		assertEquals(new Long(2000), tierConfig.get(1).getAmount());
+	}
+
+	@Test
+	public void testPlanCreateWithBuckets() throws StripeException {
+		Map<String, Object> productParams = new HashMap<String, Object>();
+		productParams.put("name", "Bar");
+
+		Map<String, Object> params = getUniquePlanParams();
+		params.remove("name");
+		params.put("nickname", "Foo");
+		params.put("product", productParams);
+
+		Map<String, Object> buckets = new HashMap<>();
+		buckets.put("bucket_size", 1000);
+		buckets.put("mode", "round_up");
+
+		params.put("buckets", buckets);
+
+		Plan plan = Plan.create(params);
+		assertEquals(new Long(100), plan.getAmount());
+
+		PlanBuckets bucketConfiguration = plan.getBuckets();
+		assertEquals(new Long(1000), bucketConfiguration.getBucketSize());
+		assertEquals("round_up", bucketConfiguration.getMode());
+	}
+
+	@Test
+	public void testPlanCreateMetered() throws StripeException {
+		Map<String, Object> productParams = new HashMap<String, Object>();
+		productParams.put("name", "Bar");
+
+		Map<String, Object> params = getUniquePlanParams();
+		params.remove("name");
+		params.put("nickname", "Foo");
+		params.put("product", productParams);
+
+		params.put("usage_type", "metered");
+
+		Plan plan = Plan.create(params);
+		assertEquals("metered", plan.getUsageType());
 	}
 
 	@Test

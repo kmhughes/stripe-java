@@ -94,6 +94,8 @@ public abstract class APIResource extends StripeObject {
 			return "subscription_item";
 		} else if (className.equals("threedsecure")) {
 			return "three_d_secure";
+		} else if (className.equals("usagerecord")) {
+			return "usage_record";
 		} else {
 			return className;
 		}
@@ -124,6 +126,24 @@ public abstract class APIResource extends StripeObject {
 			throws InvalidRequestException {
 		try {
 			return String.format("%s/%s", classURL(clazz, apiBase), urlEncode(id));
+		} catch (UnsupportedEncodingException e) {
+			throw new InvalidRequestException("Unable to encode parameters to "
+					+ CHARSET
+					+ ". Please contact support@stripe.com for assistance.",
+					null, null, null, 0, e);
+		}
+	}
+
+	protected static String subresourceURL(Class<?> clazz, String id, Class<?> subClazz)
+			throws InvalidRequestException {
+		return subresourceURL(clazz, id, subClazz, Stripe.getApiBase());
+	}
+
+
+	protected static String subresourceURL(Class<?> clazz, String id, Class<?> subClazz, String apiBase)
+			throws InvalidRequestException {
+		try {
+			return String.format("%s/%s/%ss", classURL(clazz, apiBase), urlEncode(id), className(subClazz));
 		} catch (UnsupportedEncodingException e) {
 			throw new InvalidRequestException("Unable to encode parameters to "
 					+ CHARSET
