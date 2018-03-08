@@ -1,5 +1,6 @@
 package com.stripe.functional;
 
+import com.google.common.collect.ImmutableList;
 import com.stripe.BaseStripeFunctionalTest;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -51,9 +52,7 @@ public class PlanTest extends BaseStripeFunctionalTest {
 		tier2.put("up_to", "inf");
 		tier2.put("amount", 2000);
 
-		List<Map<String, Object>> tiers = new ArrayList<>();
-		tiers.add(tier1);
-		tiers.add(tier2);
+		List<Map<String, Object>> tiers = ImmutableList.of(tier1, tier2);
 		params.put("tiers", tiers);
 		params.put("tiers_mode", "volume");
 		params.put("billing_scheme", "tiered");
