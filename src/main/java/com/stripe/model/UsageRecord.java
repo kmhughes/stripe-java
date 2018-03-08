@@ -63,12 +63,6 @@ public class UsageRecord extends APIResource implements HasId {
         this.timestamp = timestamp;
     }
 
-    public static UsageRecord create(String subscriptionItem, Map<String, Object> params)
-            throws AuthenticationException, InvalidRequestException,
-            APIConnectionException, CardException, APIException {
-        return create(subscriptionItem, params, (RequestOptions) null);
-    }
-
     public static UsageRecord create(String subscriptionItem, Map<String, Object> params, RequestOptions options)
             throws AuthenticationException, InvalidRequestException,
             APIConnectionException, CardException, APIException {

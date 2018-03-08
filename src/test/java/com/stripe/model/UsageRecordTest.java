@@ -35,7 +35,7 @@ public class UsageRecordTest extends BaseStripeTest {
         params.put("timestamp", unixTime);
         params.put("livemode", true);
 
-        UsageRecord ur = UsageRecord.create("si_abc", params);
+        UsageRecord ur = UsageRecord.create("si_abc", params, null);
 
         verifyPost(UsageRecord.class, "https://api.stripe.com/v1/subscription_items/si_abc/usage_records", params);
         verifyNoMoreInteractions(networkMock);

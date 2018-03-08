@@ -60,7 +60,7 @@ public class PlanTest extends BaseStripeFunctionalTest {
 
 		Plan plan = Plan.create(params);
 		assertEquals(null, plan.getAmount());
-		assertEquals("volume", plan.getTiers());
+		assertEquals("volume", plan.getTiersMode());
 		List<PlanTier> tierConfig = plan.getTiers();
 		assertEquals(2, tierConfig.size());
 		assertEquals(new Long(1000), tierConfig.get(0).getAmount());

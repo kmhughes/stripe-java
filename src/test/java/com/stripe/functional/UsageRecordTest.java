@@ -25,7 +25,7 @@ public class UsageRecordTest extends BaseStripeFunctionalTest {
         long unixTime = System.currentTimeMillis() / 1000L;
         params.put("timestamp", unixTime);
 
-        UsageRecord ur = UsageRecord.create(subItem.getId(), params);
+        UsageRecord ur = UsageRecord.create(subItem.getId(), params, null);
 
         assertEquals(new Long(1000), ur.getQuantity());
         assertEquals(new Long(unixTime), ur.getTimestamp());
